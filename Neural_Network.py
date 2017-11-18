@@ -2,6 +2,8 @@ import numpy as np
 import Render_Graph
 
 class Neural_Network():
+    def __init__(self):
+        print("init neural")
     def train(self, array, ccondition=100, lrate=0.5):
         inputx, outputy, row, col = self.setInitialization(array)
 
@@ -90,7 +92,6 @@ class Neural_Network():
         # add threshold to inputx
         threshold = np.zeros((row, 1)) - 1
         inputx = np.hstack((threshold, inputx))
-
         return inputx, outputy, row, col
 
 

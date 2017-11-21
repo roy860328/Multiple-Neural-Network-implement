@@ -3,21 +3,25 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
-def showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y, weight):
+def showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y):
     try:
+        ###clear 之前的plot
+        plt.clf()
         plt.figure(1, figsize=(16, 12))
         plt.subplot(221)
         plt.title("TrainSample")
-        showPlot(trainDatas, trainOutputResult, y.shape[0], weight)
+        setPlot(trainDatas, trainOutputResult, y.shape[0])
         plt.subplot(222)
         plt.title("TestSample (black point is identify error data)")
-        showPlot(testDatas, testOutputResult, y.shape[0], weight)
+        setPlot(testDatas, testOutputResult, y.shape[0])
+        plt.show()
     except Exception as e:
+        print(e)
         pass
 # 可以plot出2D的data. outputResult為資料集輸出的結果(output).
-def showPlot(Datas, outputResult, outputHadvalue, weight):
+def setPlot(Datas, outputResult, outputHadvalue):
     Datas = np.hsplit(Datas, [1])
-    Datas = np.hsplit(Datas[1], [1])
+    Datas = Datas[1]
 
     # plt.scatter(Datas[0], Datas[1], c='r', label='perceptron1')
     pointlabel = np.zeros(outputHadvalue)
@@ -32,7 +36,4 @@ def showPlot(Datas, outputResult, outputHadvalue, weight):
     plt.ylim([-5, 8])
 
     x = np.arange(-5, 5, 0.1)
-    for i in range(weight.shape[0]):
-        y = -(weight[i][1] / weight[i][2]) * x - weight[i][0] / weight[i][2]
-        plt.plot(x, y)
     plt.legend()

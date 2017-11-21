@@ -1,7 +1,4 @@
 import tkinter as tk
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 import os
 import sys
 #
@@ -62,8 +59,6 @@ class GUI():
         interface.mainloop()
 
     def clickTrainBtn(self):
-        ###clear 之前的plot
-        plt.clf()
         ###偵測列表選取的txt檔案   #################################listTxt如何取得的？
         selectionfile = self.listTxt.curselection()
         selectionfile = self.listTxt.get(selectionfile)
@@ -72,16 +67,12 @@ class GUI():
         lrate = float(self.learnrateentry.get())
         ccondition = int(self.convergenceentry.get())
 
-        trainrate, testrate, weight = Neural_Network().train(array, ccondition, lrate)
-        self.showTrainresult(trainrate, testrate, weight)
-        plt.show()
+        trainrate, testrate = Neural_Network().train(array, ccondition, lrate)
+        self.showTrainresult(trainrate, testrate)
 
-    def showTrainresult(self, trainrate, testrate, weight):
+    def showTrainresult(self, trainrate, testrate):
         printString = "\n" + "trainrate: " + str(trainrate) + "\n" + "testrate: " + str(testrate) + "\n"
-        # [(printString += "weight[" + str(i) + "]: " + str(weight[i]) + "\n") for i in range(weight.shape[0])]
-        for i in range(weight.shape[0]):
-            printString += "weight[" + str(i) + "]: " + str(weight[i]) + "\n"
-            self.outputresultprint.set(printString)
+        self.outputresultprint.set(printString)
     def readFile(self, file):
         try:
             string = ""

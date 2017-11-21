@@ -7,12 +7,15 @@ class Neural_Network():
         print("init neural")
         self.convergenceCondition = 100
         self.learnrate = 0.5
+        #normalize in
+        self.interval = 0
 
     def train(self, array, convergenceCondition=100, learnrate=0.5):
         self.convergenceCondition = convergenceCondition
         self.learnrate = learnrate
 
         inputx, outputy, row, col = self.initializeDatatoInputandOutput(array)
+        outputy = self.normalizeExpectOutput(outputy)
 
         trainDatasIndex, trainDatas, testDatasIndex, testDatas \
             = self.chose_Train_Test_Data(inputx, row)
@@ -33,9 +36,11 @@ class Neural_Network():
         trainOutputResult = np.zeros(trainDatas.shape[0])
         testOutputResult = np.zeros(testDatas.shape[0])
         # 正確“訓練辨識”數, 正確“測試辨識”數
-        trainIdentifyCorrect, testIdentifyCorrect = 0, 0
+        trainCorrectRate, testCorrectRate = 0, 0
 
-        self.start_Train(y, weight, outputy, trainDatas, trainDatasIndex)
+        y, weight = self.start_Train(y, weight, outputy, trainDatas, trainDatasIndex)
+        trainCorrectRate, trainOutputResult = self.cal_Multiple_Neural_Network_CorrectRate(y, weight, outputy, trainDatasIndex, trainDatas)
+        testCorrectRate, testOutputResult = self.cal_Multiple_Neural_Network_CorrectRate(y, weight, outputy, testDatasIndex, testDatas)
         ############ start train ##############
         # for n in range(ccondition):
         #     for i in range(trainDatas.shape[0]):
@@ -48,7 +53,7 @@ class Neural_Network():
         #
         #         ###計算訓練辨識率
         #         if self.judgeYResult(y, outputy[trainDatasIndex[i]]):
-        #             trainIdentifyCorrect = trainIdentifyCorrect + 1
+        #             trainCorrectRate = trainCorrectRate + 1
         #             ##紀錄最後一次outputy結果
         #             if n == ccondition - 1:
         #                 trainOutputResult[i] = outputy[trainDatasIndex[i]]
@@ -57,7 +62,7 @@ class Neural_Network():
         #             trainOutputResult[i] = -1
         #
         # # print訓練辨識率
-        # print("traincorrectrate: ", (trainIdentifyCorrect / trainDatas.shape[0]) / ccondition)
+        # print("traincorrectrate: ", (trainCorrectRate / trainDatas.shape[0]) / ccondition)
         #
         # ############ test rate ##############
         # for i in range(testDatas.shape[0]):
@@ -67,7 +72,7 @@ class Neural_Network():
         #
         #     ###計算測試辨識率
         #     if self.judgeYResult(y, outputy[testDatasIndex[i]]):
-        #         testIdentifyCorrect = testIdentifyCorrect + 1
+        #         testCorrectRate = testCorrectRate + 1
         #         ##紀錄最後一次outputy結果
         #         if n == ccondition - 1:
         #             testOutputResult[i] = outputy[testDatasIndex[i]]
@@ -76,17 +81,17 @@ class Neural_Network():
         #         testOutputResult[i] = -1
         #
         # # print測試辨識率 和 weight[]
-        # print("testcorrectrate: ", testIdentifyCorrect / testDatas.shape[0])
+        # print("testcorrectrate: ", testCorrectRate / testDatas.shape[0])
         # [print("weight[", i, "]: ", weight[i]) for i in range(y.shape[0])]
 
-        # 如果沒用到weight[0]，則設成0
-        if int(np.amin(outputy)) != 0:
-            weight[0] = [0]
+        # # 如果沒用到weight[0]，則設成0
+        # if int(np.amin(outputy)) != 0:
+        #     weight[0] = [0]
 
         ##########畫出圖形##########
-        Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y, weight)
+        Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y[-1])
 
-        return ((trainIdentifyCorrect / trainDatas.shape[0]) / convergenceCondition), (testIdentifyCorrect / testDatas.shape[0]), weight
+        return trainCorrectRate, testCorrectRate
 
 
     # Initialize the text file to inputx and outputy array
@@ -101,6 +106,17 @@ class Neural_Network():
         threshold = np.zeros((row, 1)) - 1
         inputx = np.hstack((threshold, inputx))
         return inputx, outputy, row, col
+
+    #Normalize expectoutput
+    def normalizeExpectOutput(self, expectoutput):
+        try:
+            self.interval = np.amax(expectoutput) - np.amin(expectoutput)
+            expectoutput = (expectoutput - np.amin(expectoutput)) / (np.amax(expectoutput) - np.amin(expectoutput))
+        except Exception as e:
+            print(e)
+            raise
+        return expectoutput
+
 
     #chose train's data and test's data randomly
     def chose_Train_Test_Data(self, inputx, row):
@@ -149,13 +165,12 @@ class Neural_Network():
     def calNetwork(self, weight, datax):
         y = np.dot(weight, datax)
         ###sgn[y]
-        y = np.exp(y)
+        y = 1/(1 + np.exp(y))
         return y
 
     #Back Propagation
     def adjustOutputWeight(self, weight, expectoutputj, outputyj, outputyi):
         try:
-            expectoutputj = (expectoutputj - np.amin(expectoutputj))/(np.amax(expectoutputj) - np.amin(expectoutputj))
             dk = (expectoutputj-outputyj)*outputyj*(1-expectoutputj)
             weight = weight + self.learnrate * dk.T * outputyi
         except Exception as e:
@@ -165,16 +180,45 @@ class Neural_Network():
 
     #Back Propagation
     def adjustHiddenWeight(self, weightji, input, outputyj, dk, weightkj):
-        dj = outputyj*(1-outputyj)*np.dot(dk, weightkj)
-        weightji = weightji + self.learnrate * dj.T * input
+        try:
+            dj = outputyj*(1-outputyj)*np.dot(dk, weightkj)
+            weightji = weightji + self.learnrate * dj.T * input
+        except Exception as e:
+            print(e)
+            raise
         return weightji, dj
 
+    def cal_Multiple_Neural_Network_CorrectRate(self, y, weight, outputy, DatasIndex, Datas):
+        try:
+            correctRate = 0
+            outputy = outputy[DatasIndex, :]
+            calOutputy = outputy
+            for i in range(outputy.shape[0]):
+                for j in range(len(weight)):
+                    y[j] = self.calNetwork(weight[j], Datas[i])
+
+                #Lower and Upper Bound
+                y[-1], calOutputy[i] = self.findBound(y)
+                if self.judgeYResult(y[-1], outputy[i]):
+                    correctRate += 1
+            correctRate = correctRate/Datas.shape[0]
+        except Exception as e:
+            print(e)
+            raise
+        return correctRate, calOutputy
+    #Lower and Upper Bound
+    def findBound(self, y):
+        intervalnumber = 1/(self.interval+1)
+        tempty = y[-1]
+        for j in range(int(self.interval)+1):
+            if intervalnumber * j <= tempty[0] and tempty[0] <= intervalnumber * (j+1):
+                tempty[0] = intervalnumber * (j+1)
+                return tempty, tempty[0]
+
     # after calNetwork, if the result is correct  return True, else False
-    def judgeYResult(self, y, yRealValue):
-        if y[int(yRealValue)] == 1:
-            nonzero = np.nonzero(y)[0]
-            if nonzero.shape[0] == 1:
-                return True
+    def judgeYResult(self, outputy, expectoutput):
+        if outputy[0] == expectoutput[0]:
+            return True
         return False
 
 

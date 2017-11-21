@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="88f1f6f8-16aa-4dc1-8b7f-41e28315b224" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GUI.py" afterPath="$PROJECT_DIR$/GUI.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Neural_Network.py" afterPath="$PROJECT_DIR$/Neural_Network.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Render_Graph.py" afterPath="$PROJECT_DIR$/Render_Graph.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,36 +19,36 @@
       <file leaf-file-name="GUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="107">
-              <caret line="64" column="8" lean-forward="false" selection-start-line="64" selection-start-column="8" selection-end-line="65" selection-end-column="17" />
+            <state relative-caret-position="252">
+              <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
-                <element signature="e#282#2182#0" expanded="false" />
+                <element signature="e#208#2108#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Neural_Network.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Neural_Network.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Neural_Network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+            <state relative-caret-position="338">
+              <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <element signature="e#3621#3978#0" expanded="false" />
-                <element signature="e#4687#4846#0" expanded="false" />
-                <element signature="e#7021#7174#0" expanded="false" />
+                <element signature="e#4741#5206#0" expanded="false" />
+                <element signature="e#5341#5500#0" expanded="false" />
+                <element signature="e#6764#6854#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Render_Graph.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Render_Graph.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Render_Graph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="6" column="8" lean-forward="true" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+            <state relative-caret-position="103">
+              <caret line="16" column="18" lean-forward="true" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -68,7 +70,7 @@
         <entry file="file://$PROJECT_DIR$/../done code/類神經104502510_蔡政育＿作業一/neural-network.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2712">
-              <caret line="115" column="89" lean-forward="true" selection-start-line="115" selection-start-column="89" selection-end-line="115" selection-end-column="89" />
+              <caret line="115" column="89" lean-forward="false" selection-start-line="115" selection-start-column="89" selection-end-line="115" selection-end-column="89" />
               <folding />
             </state>
           </provider>
@@ -101,9 +103,12 @@
       <find>testIdnumber</find>
       <find>condition</find>
       <find>except</find>
+      <find>testOutputResult</find>
+      <find>outputy</find>
     </findStrings>
     <replaceStrings>
       <replace>testIdentifyCorrect</replace>
+      <replace>testCorrectRate</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -115,15 +120,15 @@
         <option value="$PROJECT_DIR$/multiple-neural-network.py" />
         <option value="$PROJECT_DIR$/neural-network.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/GUI.py" />
         <option value="$PROJECT_DIR$/Neural_Network.py" />
+        <option value="$PROJECT_DIR$/GUI.py" />
         <option value="$PROJECT_DIR$/Render_Graph.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="216" />
-    <option name="y" value="26" />
+    <option name="x" value="370" />
+    <option name="y" value="23" />
     <option name="width" value="1400" />
     <option name="height" value="908" />
   </component>
@@ -261,7 +266,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="216" y="26" width="1400" height="908" extended-state="0" />
+    <frame x="370" y="23" width="1400" height="908" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18857142" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -297,16 +302,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Neural_Network.py</url>
-          <line>88</line>
+          <line>93</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Neural_Network.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="27" />
+          <url>file://$PROJECT_DIR$/Render_Graph.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Render_Graph.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="32" />
+      <option name="time" value="53" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -317,7 +327,57 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#282#2182#0" expanded="false" />
+            <element signature="e#208#2108#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Render_Graph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="16" column="18" lean-forward="true" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="4" column="6" lean-forward="false" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Neural_Network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2208">
+          <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#4741#5206#0" expanded="false" />
+            <element signature="e#5341#5500#0" expanded="false" />
+            <element signature="e#6764#6854#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../done code/類神經104502510_蔡政育＿作業一/neural-network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2712">
+          <caret line="115" column="89" lean-forward="true" selection-start-line="115" selection-start-column="89" selection-end-line="115" selection-end-column="89" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#208#2108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -328,9 +388,9 @@
           <caret line="161" column="0" lean-forward="false" selection-start-line="161" selection-start-column="0" selection-end-line="161" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#3621#3978#0" expanded="false" />
-            <element signature="e#4687#4846#0" expanded="false" />
-            <element signature="e#7021#7174#0" expanded="false" />
+            <element signature="e#4741#5206#0" expanded="false" />
+            <element signature="e#5341#5500#0" expanded="false" />
+            <element signature="e#6764#6854#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -339,7 +399,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="53928">
           <caret line="2258" column="0" lean-forward="false" selection-start-line="2258" selection-start-column="0" selection-end-line="2258" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -375,7 +434,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#282#2182#0" expanded="false" />
+            <element signature="e#208#2108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -412,7 +471,7 @@
           <caret line="8" column="41" lean-forward="false" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#282#2182#0" expanded="false" />
+            <element signature="e#208#2108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -441,9 +500,9 @@
           <caret line="1" column="19" lean-forward="true" selection-start-line="1" selection-start-column="19" selection-end-line="1" selection-end-column="19" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#3621#3978#0" expanded="false" />
-            <element signature="e#4687#4846#0" expanded="false" />
-            <element signature="e#7021#7174#0" expanded="false" />
+            <element signature="e#4741#5206#0" expanded="false" />
+            <element signature="e#5341#5500#0" expanded="false" />
+            <element signature="e#6764#6854#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -455,9 +514,9 @@
           <caret line="132" column="4" lean-forward="false" selection-start-line="132" selection-start-column="4" selection-end-line="132" selection-end-column="52" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#3621#3978#0" expanded="false" />
-            <element signature="e#4687#4846#0" expanded="false" />
-            <element signature="e#7021#7174#0" expanded="false" />
+            <element signature="e#4741#5206#0" expanded="false" />
+            <element signature="e#5341#5500#0" expanded="false" />
+            <element signature="e#6764#6854#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -486,7 +545,7 @@
           <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#282#2182#0" expanded="false" />
+            <element signature="e#208#2108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -498,7 +557,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#282#2182#0" expanded="false" />
+            <element signature="e#208#2108#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -509,9 +568,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#3621#3978#0" expanded="false" />
-            <element signature="e#4687#4846#0" expanded="false" />
-            <element signature="e#7021#7174#0" expanded="false" />
+            <element signature="e#4741#5206#0" expanded="false" />
+            <element signature="e#5341#5500#0" expanded="false" />
+            <element signature="e#6764#6854#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -533,13 +592,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/tkinter/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="2091" column="0" lean-forward="false" selection-start-line="2091" selection-start-column="0" selection-end-line="2091" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/traceback.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -550,7 +602,7 @@
     <entry file="file://$PROJECT_DIR$/../done code/類神經104502510_蔡政育＿作業一/neural-network.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2712">
-          <caret line="115" column="89" lean-forward="true" selection-start-line="115" selection-start-column="89" selection-end-line="115" selection-end-column="89" />
+          <caret line="115" column="89" lean-forward="false" selection-start-line="115" selection-start-column="89" selection-end-line="115" selection-end-column="89" />
           <folding />
         </state>
       </provider>
@@ -559,40 +611,47 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
           <caret line="2258" column="0" lean-forward="false" selection-start-line="2258" selection-start-column="0" selection-end-line="2258" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/tkinter/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="1277" column="19" lean-forward="true" selection-start-line="1277" selection-start-column="19" selection-end-line="1277" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="64" column="8" lean-forward="false" selection-start-line="64" selection-start-column="8" selection-end-line="65" selection-end-column="17" />
+        <state relative-caret-position="252">
+          <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <element signature="e#282#2182#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Render_Graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="6" column="8" lean-forward="true" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#208#2108#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Neural_Network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+        <state relative-caret-position="338">
+          <caret line="95" column="0" lean-forward="true" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#3621#3978#0" expanded="false" />
-            <element signature="e#4687#4846#0" expanded="false" />
-            <element signature="e#7021#7174#0" expanded="false" />
+            <element signature="e#4741#5206#0" expanded="false" />
+            <element signature="e#5341#5500#0" expanded="false" />
+            <element signature="e#6764#6854#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Render_Graph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="103">
+          <caret line="16" column="18" lean-forward="true" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>

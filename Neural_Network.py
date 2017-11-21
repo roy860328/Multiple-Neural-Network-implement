@@ -1,25 +1,41 @@
 import numpy as np
 import Render_Graph
+import  sys
 
 class Neural_Network():
     def __init__(self):
         print("init neural")
+        self.convergenceCondition = 100
+        self.learnrate = 0.5
 
-    def train(self, array, ccondition=100, lrate=0.5):
+    def train(self, array, convergenceCondition=100, learnrate=0.5):
+        self.convergenceCondition = convergenceCondition
+        self.learnrate = learnrate
+
         inputx, outputy, row, col = self.initializeDatatoInputandOutput(array)
 
         trainDatasIndex, trainDatas, testDatasIndex, testDatas \
             = self.chose_Train_Test_Data(inputx, row)
 
-        ##神經元(perceptron)outputy數量 weight初始化
-        y = self.new_Layer(1, int(np.amax(outputy)) + 1)
-        weight = self.new_Layer(col, y.shape[0])
+        ##神經元(perceptron)y, weight初始化
+        y = list()
+        result = self.new_Layer(1, 3)
+        y.append(result)
+        result = self.new_Layer(1, 1)
+        y.append(result)
+
+        weight = list()
+        w = self.new_Layer(col, 3)
+        weight.append(w)
+        w = self.new_Layer(3, 1)
+        weight.append(w)
         ##儲存最後一次outputy結果，用來畫出圖形
         trainOutputResult = np.zeros(trainDatas.shape[0])
         testOutputResult = np.zeros(testDatas.shape[0])
         # 正確“訓練辨識”數, 正確“測試辨識”數
         trainIdentifyCorrect, testIdentifyCorrect = 0, 0
 
+        self.start_Train(y, weight, outputy, trainDatas, trainDatasIndex)
         ############ start train ##############
         # for n in range(ccondition):
         #     for i in range(trainDatas.shape[0]):
@@ -70,7 +86,7 @@ class Neural_Network():
         ##########畫出圖形##########
         Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y, weight)
 
-        return ((trainIdentifyCorrect / trainDatas.shape[0]) / ccondition), (testIdentifyCorrect / testDatas.shape[0]), weight
+        return ((trainIdentifyCorrect / trainDatas.shape[0]) / convergenceCondition), (testIdentifyCorrect / testDatas.shape[0]), weight
 
 
     # Initialize the text file to inputx and outputy array
@@ -105,25 +121,53 @@ class Neural_Network():
         for i in range(outputSize):
             weight[i] = np.random.rand(1, inputSize)
         return weight
+
     # calculate network and adjust result to two value (0 or 1)
-    def start_Train(self, runtimes ):
-        return runtimes
+    def start_Train(self, y, weight, outputy, Datas, DatasIndex):
+        try:
+            outputy = outputy[DatasIndex,:]
+            for _ in range(self.convergenceCondition):
+                for i in range(Datas.shape[0]):
+                    for j in range(len(weight)):
+                        y[j] = self.calNetwork(weight[j], Datas[i])
+
+                    ##Back Propagation
+                    weight[-1], dk = self.adjustOutputWeight(weight[-1],
+                                                  outputy, y[-1], y[-2])
+                    for j in range(len(weight)-2, -1, -1):
+                        if j-1 >= 0:
+                            weight[j], dk = self.adjustHiddenWeight(weight[j],
+                                                                    y[j-1], y[j], dk, weight[j+1])
+                        #要修改第一層時，inout為Datas
+                        else:
+                            weight[j], dk = self.adjustHiddenWeight(weight[j],
+                                                                Datas[i], y[j], dk, weight[j+1])
+        except Exception as e:
+            print(e)
+            raise
+        return y, weight
     def calNetwork(self, weight, datax):
         y = np.dot(weight, datax)
         ###sgn[y]
-        if y > 0:
-            y = 1
-        else:
-            y = 0
+        y = np.exp(y)
         return y
-    # y=計算的結果, weight=當前權重, outputy=正確輸出, lrate=學習率, trainDatas=當前inputx, expectoutput=期望訓練的值
-    def adjustWeight(self, y, weight, outputy, lrate, trainDatas, expectoutput):
-        if y == 0 and outputy == expectoutput:
-            weight = weight + np.multiply(lrate, trainDatas)
-        elif y == 1 and outputy != expectoutput:
-            weight = weight - np.multiply(lrate, trainDatas)
-        return weight
 
+    #Back Propagation
+    def adjustOutputWeight(self, weight, expectoutputj, outputyj, outputyi):
+        try:
+            expectoutputj = (expectoutputj - np.amin(expectoutputj))/(np.amax(expectoutputj) - np.amin(expectoutputj))
+            dk = (expectoutputj-outputyj)*outputyj*(1-expectoutputj)
+            weight = weight + self.learnrate * dk.T * outputyi
+        except Exception as e:
+            print(e)
+            raise
+        return weight, dk
+
+    #Back Propagation
+    def adjustHiddenWeight(self, weightji, input, outputyj, dk, weightkj):
+        dj = outputyj*(1-outputyj)*np.dot(dk, weightkj)
+        weightji = weightji + self.learnrate * dj.T * input
+        return weightji, dj
 
     # after calNetwork, if the result is correct  return True, else False
     def judgeYResult(self, y, yRealValue):

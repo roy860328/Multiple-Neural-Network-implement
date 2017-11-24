@@ -10,86 +10,51 @@ class Neural_Network():
         #normalize in
         self.interval = 0
 
-    def train(self, array, convergenceCondition=100, learnrate=0.5):
+    def train(self, array, convergenceCondition=100, learnrate=0.3):
         self.convergenceCondition = convergenceCondition
         self.learnrate = learnrate
 
-        inputx, outputy, row, col = self.initializeDatatoInputandOutput(array)
+        inputx, orioutput, row, col = self.initializeDatatoInputandOutput(array)
+        outputy = orioutput
         outputy = self.normalizeExpectOutput(outputy)
 
         trainDatasIndex, trainDatas, testDatasIndex, testDatas \
             = self.chose_Train_Test_Data(inputx, row)
 
         ##神經元(perceptron)y, weight初始化
+        NeuronNumber = 4
+
         y = list()
-        result = self.new_Layer(1, 3)
+        result = self.new_Layer(1, NeuronNumber)
         y.append(result)
         result = self.new_Layer(1, 1)
         y.append(result)
 
         weight = list()
-        w = self.new_Layer(col, 3)
+        w = self.new_Layer(col, NeuronNumber)
         weight.append(w)
-        w = self.new_Layer(3, 1)
+        w = self.new_Layer(NeuronNumber+1, 1)
         weight.append(w)
-        ##儲存最後一次outputy結果，用來畫出圖形
-        trainOutputResult = np.zeros(trainDatas.shape[0])
-        testOutputResult = np.zeros(testDatas.shape[0])
-        # 正確“訓練辨識”數, 正確“測試辨識”數
-        trainCorrectRate, testCorrectRate = 0, 0
+
+        # #
+        # y = list()
+        # result = np.array([2, 1])
+        # y.append(result)
+        # result = np.array([1])
+        # y.append(result)
+        #
+        # weight = list()
+        # w = np.array([[-1.2,1,1],[0.3,1,1]])
+        # weight.append(w)
+        # w = np.array([0.5,0.4,0.8])
+        # weight.append(w)
+        # #
 
         y, weight = self.start_Train(y, weight, outputy, trainDatas, trainDatasIndex)
         trainCorrectRate, trainOutputResult = self.cal_Multiple_Neural_Network_CorrectRate(y, weight, outputy, trainDatasIndex, trainDatas)
         testCorrectRate, testOutputResult = self.cal_Multiple_Neural_Network_CorrectRate(y, weight, outputy, testDatasIndex, testDatas)
-        ############ start train ##############
-        # for n in range(ccondition):
-        #     for i in range(trainDatas.shape[0]):
-        #
-        #         for j in range(y.shape[0]):
-        #             y[j] = self.calNetwork(weight[j], trainDatas[i])
-        #             ###adjust weight[j]
-        #             weight[j] = self.adjustWeight(y[j], weight[j], outputy[trainDatasIndex[i]], lrate,
-        #                                      trainDatas[i], j)
-        #
-        #         ###計算訓練辨識率
-        #         if self.judgeYResult(y, outputy[trainDatasIndex[i]]):
-        #             trainCorrectRate = trainCorrectRate + 1
-        #             ##紀錄最後一次outputy結果
-        #             if n == ccondition - 1:
-        #                 trainOutputResult[i] = outputy[trainDatasIndex[i]]
-        #         ##紀錄最後一次outputy結果
-        #         elif n == ccondition - 1:
-        #             trainOutputResult[i] = -1
-        #
-        # # print訓練辨識率
-        # print("traincorrectrate: ", (trainCorrectRate / trainDatas.shape[0]) / ccondition)
-        #
-        # ############ test rate ##############
-        # for i in range(testDatas.shape[0]):
-        #
-        #     for j in range(y.shape[0]):
-        #         y[j] = self.calNetwork(weight[j], testDatas[i])
-        #
-        #     ###計算測試辨識率
-        #     if self.judgeYResult(y, outputy[testDatasIndex[i]]):
-        #         testCorrectRate = testCorrectRate + 1
-        #         ##紀錄最後一次outputy結果
-        #         if n == ccondition - 1:
-        #             testOutputResult[i] = outputy[testDatasIndex[i]]
-        #     ##紀錄最後一次outputy結果
-        #     elif n == ccondition - 1:
-        #         testOutputResult[i] = -1
-        #
-        # # print測試辨識率 和 weight[]
-        # print("testcorrectrate: ", testCorrectRate / testDatas.shape[0])
-        # [print("weight[", i, "]: ", weight[i]) for i in range(y.shape[0])]
 
-        # # 如果沒用到weight[0]，則設成0
-        # if int(np.amin(outputy)) != 0:
-        #     weight[0] = [0]
-
-        ##########畫出圖形##########
-        Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y[-1])
+        Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, orioutput)
 
         return trainCorrectRate, testCorrectRate
 
@@ -103,8 +68,8 @@ class Neural_Network():
         inputx = array[0]
         outputy = array[1]
         # add threshold to inputx
-        threshold = np.zeros((row, 1)) - 1
-        inputx = np.hstack((threshold, inputx))
+        # threshold = np.zeros((row, 1)) - 1
+        # inputx = np.hstack((threshold, inputx))
         return inputx, outputy, row, col
 
     #Normalize expectoutput
@@ -121,14 +86,20 @@ class Neural_Network():
     #chose train's data and test's data randomly
     def chose_Train_Test_Data(self, inputx, row):
         # 選擇2/3的隨機訓練data
-        trainDatasIndex = np.random.choice(inputx.shape[0], size=int(row * 2 / 3) + 1, replace=False)
-        trainDatas = inputx[trainDatasIndex, :]
-        # 選擇1/3的隨機測試data
-        testDatasIndex = np.arange(0, row)
-        testDatasIndex = set(testDatasIndex) - set(trainDatasIndex)
-        testDatasIndex = list(testDatasIndex)
-        testDatas = inputx[testDatasIndex, :]
-
+        if inputx.shape[0] > 4:
+            trainDatasIndex = np.random.choice(inputx.shape[0], size=int(row * 2 / 3) + 1, replace=False)
+            trainDatas = inputx[trainDatasIndex, :]
+            # 選擇1/3的隨機測試data
+            testDatasIndex = np.arange(0, row)
+            testDatasIndex = set(testDatasIndex) - set(trainDatasIndex)
+            testDatasIndex = list(testDatasIndex)
+            testDatas = inputx[testDatasIndex, :]
+        else:
+            trainDatasIndex = np.arange(0, row)
+            trainDatas = inputx[trainDatasIndex, :]
+            # 選擇1/3的隨機測試data
+            testDatasIndex = np.arange(0, row)
+            testDatas = inputx[testDatasIndex, :]
         return trainDatasIndex, trainDatas, testDatasIndex, testDatas
 
     #weight = [outputSize, inputSize]  (outputSize = output Neuron's number)
@@ -143,35 +114,40 @@ class Neural_Network():
         try:
             outputy = outputy[DatasIndex,:]
             for _ in range(self.convergenceCondition):
+                #store old weight to continue Back Propagation
                 for i in range(Datas.shape[0]):
-                    for j in range(len(weight)):
-                        y[j] = self.calNetwork(weight[j], Datas[i])
+                    tempw = weight[:]
+                    y[0] = self.calNetwork(weight[0], Datas[i])
+                    for j in range(1, len(weight)):
+                        y[j] = self.calNetwork(weight[j], y[j-1])
 
                     ##Back Propagation
-                    weight[-1], dk = self.adjustOutputWeight(weight[-1],
-                                                  outputy, y[-1], y[-2])
+                    weight[-1], dk = self.adjustOutputWeight(tempw[-1],
+                                                             outputy[i], y[-1], y[-2])
                     for j in range(len(weight)-2, -1, -1):
                         if j-1 >= 0:
-                            weight[j], dk = self.adjustHiddenWeight(weight[j],
-                                                                    y[j-1], y[j], dk, weight[j+1])
+                            weight[j], dk = self.adjustHiddenWeight(tempw[j],
+                                                                    y[j-1], y[j], dk, tempw[j+1])
                         #要修改第一層時，inout為Datas
                         else:
-                            weight[j], dk = self.adjustHiddenWeight(weight[j],
-                                                                Datas[i], y[j], dk, weight[j+1])
+                            weight[j], dk = self.adjustHiddenWeight(tempw[j],
+                                                                    Datas[i], y[j], dk, tempw[j+1])
         except Exception as e:
             print(e)
             raise
         return y, weight
     def calNetwork(self, weight, datax):
+        datax = np.insert(datax, 0, -1)
         y = np.dot(weight, datax)
         ###sgn[y]
-        y = 1/(1 + np.exp(y))
+        y = 1/(1 + np.exp(-y))
         return y
 
     #Back Propagation
     def adjustOutputWeight(self, weight, expectoutputj, outputyj, outputyi):
         try:
-            dk = (expectoutputj-outputyj)*outputyj*(1-expectoutputj)
+            outputyi = np.insert(outputyi, 0, -1)
+            dk = (expectoutputj-outputyj)*outputyj*(1-outputyj)
             weight = weight + self.learnrate * dk.T * outputyi
         except Exception as e:
             print(e)
@@ -181,8 +157,13 @@ class Neural_Network():
     #Back Propagation
     def adjustHiddenWeight(self, weightji, input, outputyj, dk, weightkj):
         try:
-            dj = outputyj*(1-outputyj)*np.dot(dk, weightkj)
-            weightji = weightji + self.learnrate * dj.T * input
+            input = np.insert(input, 0, -1)
+            input = np.array([input])
+            weightkj = np.delete(weightkj, 0)
+            dj = outputyj*(1-outputyj)*(dk * weightkj)
+            dj = np.array([dj])
+            dj = dj.T
+            weightji = weightji + self.learnrate * np.dot(dj, input)
         except Exception as e:
             print(e)
             raise
@@ -192,10 +173,11 @@ class Neural_Network():
         try:
             correctRate = 0
             outputy = outputy[DatasIndex, :]
-            calOutputy = outputy
+            calOutputy = np.array(outputy, copy=True)
             for i in range(outputy.shape[0]):
-                for j in range(len(weight)):
-                    y[j] = self.calNetwork(weight[j], Datas[i])
+                y[0] = self.calNetwork(weight[0], Datas[i])
+                for j in range(1, len(weight)):
+                    y[j] = self.calNetwork(weight[j], y[j - 1])
 
                 #Lower and Upper Bound
                 y[-1], calOutputy[i] = self.findBound(y)
@@ -211,9 +193,10 @@ class Neural_Network():
         intervalnumber = 1/(self.interval+1)
         tempty = y[-1]
         for j in range(int(self.interval)+1):
-            if intervalnumber * j <= tempty[0] and tempty[0] <= intervalnumber * (j+1):
-                tempty[0] = intervalnumber * (j+1)
-                return tempty, tempty[0]
+            if intervalnumber * j <= tempty and tempty <= intervalnumber * (j+1):
+                tempty = intervalnumber * (j+1)
+                tempty = np.array([tempty])
+                return tempty, tempty
 
     # after calNetwork, if the result is correct  return True, else False
     def judgeYResult(self, outputy, expectoutput):

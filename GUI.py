@@ -4,6 +4,9 @@ import sys
 #
 import numpy as np
 from Neural_Network import Neural_Network
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
 
 class GUI():
     def __init__(self):
@@ -26,7 +29,7 @@ class GUI():
         convergence.pack()
         # input convergence
         self.convergenceentry = tk.Entry(interface)
-        self.convergenceentry.insert(0, "10")
+        self.convergenceentry.insert(0, "1000")
         self.convergenceentry.pack()
         # 列出txt檔案
         self.listTxt = tk.Listbox(interface)
@@ -68,10 +71,13 @@ class GUI():
         ccondition = int(self.convergenceentry.get())
 
         trainrate, testrate = Neural_Network().train(array, ccondition, lrate)
+        print(trainrate)
         self.showTrainresult(trainrate, testrate)
+        plt.show()
 
     def showTrainresult(self, trainrate, testrate):
         printString = "\n" + "trainrate: " + str(trainrate) + "\n" + "testrate: " + str(testrate) + "\n"
+        print(printString)
         self.outputresultprint.set(printString)
     def readFile(self, file):
         try:

@@ -14,26 +14,24 @@ def showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, y):
         plt.subplot(222)
         plt.title("TestSample (black point is identify error data)")
         setPlot(testDatas, testOutputResult, y.shape[0])
-        plt.show()
     except Exception as e:
         print(e)
         pass
 # 可以plot出2D的data. outputResult為資料集輸出的結果(output).
 def setPlot(Datas, outputResult, outputHadvalue):
-    Datas = np.hsplit(Datas, [1])
-    Datas = Datas[1]
-
+    # Datas = np.hsplit(Datas, [1])
+    # Datas = Datas[1]
     # plt.scatter(Datas[0], Datas[1], c='r', label='perceptron1')
     pointlabel = np.zeros(outputHadvalue)
     colorSelect = ['black', 'b', 'g', 'r', 'c', 'm', 'y', 'k']
-    for i in range(Datas[0].shape[0]):
-        plt.scatter(Datas[0][i], Datas[1][i], c=colorSelect[int(outputResult[i]) + 1],
+    for i in range(Datas.shape[0]):
+        plt.scatter(Datas[i][0], Datas[i][1], c=colorSelect[int(outputResult[i]) + 1],
                     label=str(int(outputResult[i])) if pointlabel[int(outputResult[i])] == 0 else "")
         if pointlabel[int(outputResult[i])] == 0:
             pointlabel[int(outputResult[i])] = 1
 
     plt.xlim([-5, 5])
-    plt.ylim([-5, 8])
+    plt.ylim([-8, 8])
 
     x = np.arange(-5, 5, 0.1)
     plt.legend()

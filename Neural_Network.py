@@ -9,6 +9,7 @@ class Neural_Network():
         self.learnrate = 0.5
         #normalize in
         self.interval = 0
+        self.min0 = False
 
     def train(self, array, convergenceCondition=100, learnrate=0.3):
         self.convergenceCondition = convergenceCondition
@@ -22,7 +23,7 @@ class Neural_Network():
             = self.chose_Train_Test_Data(inputx, row)
 
         ##神經元(perceptron)y, weight初始化
-        NeuronNumber = 4
+        NeuronNumber = 5
 
         y = list()
         result = self.new_Layer(1, NeuronNumber)
@@ -36,25 +37,11 @@ class Neural_Network():
         w = self.new_Layer(NeuronNumber+1, 1)
         weight.append(w)
 
-        # #
-        # y = list()
-        # result = np.array([2, 1])
-        # y.append(result)
-        # result = np.array([1])
-        # y.append(result)
-        #
-        # weight = list()
-        # w = np.array([[-1.2,1,1],[0.3,1,1]])
-        # weight.append(w)
-        # w = np.array([0.5,0.4,0.8])
-        # weight.append(w)
-        # #
-
         y, weight = self.start_Train(y, weight, outputy, trainDatas, trainDatasIndex)
         trainCorrectRate, trainOutputResult = self.cal_Multiple_Neural_Network_CorrectRate(y, weight, outputy, trainDatasIndex, trainDatas)
         testCorrectRate, testOutputResult = self.cal_Multiple_Neural_Network_CorrectRate(y, weight, outputy, testDatasIndex, testDatas)
 
-        Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, orioutput)
+        Render_Graph.showGraph(trainDatas, trainOutputResult, testDatas, testOutputResult, orioutput, self.interval)
 
         return trainCorrectRate, testCorrectRate
 
@@ -75,8 +62,14 @@ class Neural_Network():
     #Normalize expectoutput
     def normalizeExpectOutput(self, expectoutput):
         try:
-            self.interval = np.amax(expectoutput) - np.amin(expectoutput)
-            expectoutput = (expectoutput - np.amin(expectoutput)) / (np.amax(expectoutput) - np.amin(expectoutput))
+            if np.amin(expectoutput) == 0:
+                self.interval = np.amax(expectoutput) - np.amin(expectoutput)
+                expectoutput = (expectoutput - np.amin(expectoutput)) / (self.interval)
+                self.interval = self.interval + 1
+                self.min0 = True
+            else:
+                self.interval = np.amax(expectoutput) - np.amin(expectoutput) + 1
+                expectoutput = (expectoutput - np.amin(expectoutput)) / (self.interval)
         except Exception as e:
             print(e)
             raise
@@ -190,11 +183,13 @@ class Neural_Network():
         return correctRate, calOutputy
     #Lower and Upper Bound
     def findBound(self, y):
-        intervalnumber = 1/(self.interval+1)
+        intervalnumber = 1/(self.interval)
         tempty = y[-1]
-        for j in range(int(self.interval)+1):
+        for j in range(int(self.interval)):
             if intervalnumber * j <= tempty and tempty <= intervalnumber * (j+1):
-                tempty = intervalnumber * (j+1)
+                tempty = intervalnumber * (j)
+                if self.min0 == True:
+                    tempty = tempty*2
                 tempty = np.array([tempty])
                 return tempty, tempty
 

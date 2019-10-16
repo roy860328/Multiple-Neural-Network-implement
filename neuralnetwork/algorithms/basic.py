@@ -5,7 +5,7 @@ from utils.utils import Data
 from neuralnetwork.neurons import neurons as ns
 
 class Basic(abc.ABC, threading.Thread):
-	def __init__(self, data, hidden_neurons, initial_learning_rate, total_epoches, least_error_rate, mode, *page):
+	def __init__(self, data, initial_learning_rate, total_epoches, least_error_rate, mode, *page):
 		super().__init__()
 		threading.Thread.__init__(self)
 		self.page = page[0]
@@ -21,16 +21,18 @@ class Basic(abc.ABC, threading.Thread):
 		self._epoches_print_rate = max(1, self._total_epoches//10)
 
 		self._print_init_set()
-		self._initial_neurons(hidden_neurons)
 
 	def run(self):
 		self.page.page_component.print_to_result("\n=== Thread.start() ===")
 		self.start_training()
-		self.page.page_component.print_to_result("Training Data correct rate: {0[0]}/{0[1]}, {0[2]}%".format(\
-									self._cal_correct_rate(self.data.train_x, self.data.train_y)))
+		self.page.page_component.print_to_result("\n=== Calculate correct rate ===")
+		self.cal_correct_rate("Training", self.data.train_x, self.data.train_y)
+		self.cal_correct_rate("Testing", self.data.test_x, self.data.test_y)
+		result = self.cal_correct_rate("All", self.data.x, self.data.labels)
+		inputX = self.data.x[:,0:-1]
+		self.page.graph.draw_result(inputX, result, self.weights)
 		
-		self.page.page_component.print_to_result("Testing Data correct rate: {0[0]}/{0[1]}, {0[2]}%".format(\
-									self._cal_correct_rate(self.data.test_x, self.data.test_y)))
+		self.page.finish_training()
 		self._print_weights()
 
 	''' Main Training Loop '''
@@ -44,16 +46,28 @@ class Basic(abc.ABC, threading.Thread):
 			if(self.stop_thread): 
 				self.page.page_component.print_to_result("Interrupt training ...")
 				return
+			## Traing Step Alg
 			self._train_step()
 			## print current Epoches state
 			if(self.current_iterations%self._epoches_print_rate == 0):
 				self.page.page_component.print_to_result("Epoches: {}".format(self.current_iterations))
 
 		self.page.page_component.print_to_result("\n=== Training Finish ===")
-		self.page.finish_training()
 
 	def stop_training(self):
 		self.stop_thread = True
+
+	""" compare current output with data """
+	def cal_correct_rate(self, dataformat, datasetX, datasetY):
+		assert datasetX.shape[0] == datasetY.shape[0], "Error: datasetX&Y size not same"
+		if (len(datasetX) == 0): return "Error: DatasetX&Y are Null", 0, 0
+
+		result = self._forward_propagation(datasetX)
+		correct_n = sum(result == datasetY)
+		correct_rate = round(correct_n/datasetY.shape[0]*100, 4)
+
+		self.page.page_component.print_to_result("{} Data correct rate: {}/{}, {}%".format(dataformat, correct_n, datasetY.shape[0], correct_rate))
+		return result
 
 	def _train_step(self):
 		for index in range(len(self.data.train_x)):
@@ -67,29 +81,6 @@ class Basic(abc.ABC, threading.Thread):
 			inputX = weight.result
 		return inputX
 
-	""" compare current output with data """
-	def _cal_correct_rate(self, datasetX, datasetY):
-		self.page.page_component.print_to_result("\n=== Calculate correct rate ===")
-		assert datasetX.shape[0] == datasetY.shape[0], "Error: datasetX&Y size not same"
-		if (len(datasetX) == 0): return "Error: DatasetX&Y are Null", 0, 0
-
-		result = self._forward_propagation(datasetX)
-		# print(result)
-		# print(datasetY)
-		correct_n = sum(result == datasetY)
-		correct_rate = round(correct_n/datasetY.shape[0]*100, 4)
-		return correct_n, datasetY.shape[0], correct_rate
-
-	def _initial_neurons(self, hidden_layers):
-		dim = self.data.ori_data.shape[1]
-		network_architecture = []
-		for layer_number in hidden_layers:
-			network_architecture.append((layer_number, dim))
-			dim = layer_number
-		self.weights = ns.LayersImplement().create_neurons_layer(network_architecture)
-		self.page.page_component.print_to_result("\n=== Init weights ===")
-		self.page.page_component.print_to_result(self.weights)
-
 	def _print_init_set(self):
 		self.page.page_component.print_to_result("\n=== Init: pass para to basic neural network ===")
 		self.page.page_component.print_to_result("Data: {}".format(self.data))
@@ -99,10 +90,13 @@ class Basic(abc.ABC, threading.Thread):
 		self.page.page_component.print_to_result("Epoches print rate: {}".format(self._epoches_print_rate))
 
 	def _print_weights(self):
-		self.page.page_component.print_to_result("=== Weights ===")
+		self.page.page_component.print_to_result("\n=== Weights ===")
 		for weight in self.weights:
 			self.page.page_component.print_to_result("{}".format(weight))
 
+	@abc.abstractmethod
+	def _initial_neurons(self, hidden_layers):
+		"""  """
 	@abc.abstractmethod
 	def _adjust_weight(self, intputX, outputY):
 		""" each train step with the training algorithm """
@@ -117,4 +111,5 @@ class Basic(abc.ABC, threading.Thread):
 
 	@data.setter
 	def data(self, data):
+		self.page.page_component.print_to_result("\n=== Load dataset ===")
 		self._data = Data(data)

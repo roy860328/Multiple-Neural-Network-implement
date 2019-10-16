@@ -1,17 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
 import numpy as np
+import threading 
 
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 
+
+colors = ['maroon', 'goldenrod', 'red', 'darkorange', 'peachpuff']
+
+
 class PageComponent(object):
 	"""docstring for PageComponent"""
 	def __init__(self, root, dataset_list):
 		super(PageComponent, self).__init__()
-		self.root = tk.Frame(root)
+		self.root = root
 		self.dataset_list = dataset_list
 	'''
 
@@ -32,7 +37,7 @@ class PageComponent(object):
 		panel = tk.LabelFrame(self.root, text="Learning Rate: ")
 		self.learning_rate = tk.Entry(panel)
 		self.learning_rate.config(width=5)
-		self.learning_rate.insert(tk.END, 0.3)
+		self.learning_rate.insert(tk.END, 0.1)
 		self.learning_rate.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 
@@ -79,7 +84,7 @@ class PageComponent(object):
 		panel = tk.LabelFrame(self.root, text="Neurons Hidden Layers: ")
 		self.hidden_layer = tk.Entry(panel)
 		self.hidden_layer.config(width=30)
-		self.hidden_layer.insert(tk.END, (2,3,4))
+		self.hidden_layer.insert(tk.END, (4,3))
 		self.hidden_layer.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 	'''
@@ -143,27 +148,31 @@ class PageComponent(object):
 		self.console.config(state='disable')
 		self.console.see(tk.END)
 
+
 class Graph():
 	"""docstring for Graph"""
-	def __init__(self, page):
-		self.page = page
-		self.root = tk.Frame(page.root)
-		self.component = page.page_component
+	def __init__(self, root):
+		self.root = root
+		# self.component = page.page_component
 
 		self.creat_2D_canvas()
-		self.creat_3D_canvas()
-		self.create_blank_canvas()
-		self.root.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=2, pady=3)
+		# self.creat_3D_canvas()
+		# self.create_blank_canvas()
+		# self.root.pack(fill=tk.BOTH)
+		
+		# self.show_2D_canvas()
 
 	''' Create Canvas '''
 	def creat_2D_canvas(self):
-		self.graphic_2d_page = tk.Frame(self.root)
-		figure = Figure(figsize=(6, 6), dpi=100)
-		self.canvas_2d = FigureCanvasTkAgg(figure, self.graphic_2d_page)
-		self.canvas_2d.get_tk_widget().pack(expand=True)
-		self.graphic_2d = figure.add_subplot(1, 1, 1)
-		self.graphic_2d_xlim = None
-		self.graphic_2d_ylim = None
+		self.graphic_2d_frame = tk.Frame(self.root)
+		self.graphic_2d_figure = Figure(figsize=(6, 6), dpi=100)
+		self.canvas_2d = FigureCanvasTkAgg(self.graphic_2d_figure, self.graphic_2d_frame)
+		self.canvas_2d.get_tk_widget().pack(fill=tk.BOTH, expand=False, padx=2, pady=3)
+		# self.frame = tk.Frame(self.root)
+		# self.frame.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
+		# self.f = Figure(figsize=(3, 3), dpi=100)
+		# self.canvas = FigureCanvasTkAgg(self.f, master=self.frame)
+		# self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=2, pady=3)
 	def creat_3D_canvas(self):
 		self.graphic_3d_page = tk.Frame(self.root)
 		figure = Figure(figsize=(6, 6), dpi=100)
@@ -178,34 +187,59 @@ class Graph():
 		tk.Label(self.no_graphic_page, text="").pack(expand=True)
 
 	''' Canvas controll '''
-	def draw_result(self):
-		self.component.print_to_result("=== Set Canvas type ===")
-
-		dataset = self.page.neural_network.data.ori_data
-		dim = np.asarray(dataset).shape[1]-1
+	def draw_result(self, inputX=None, result=None, weights=None):
+		dim = inputX.shape[1]
 		canvas_type = ""
 		if dim == 2:
 			canvas_type = "Show 2D canvas"
-			self.show_2D_canvas()
+			print(weights[0]())
+			self._show_2D_canvas(inputX, result, weights[0]())
 		elif dim == 3:
 			canvas_type = "Show 3D canvas"
-			self.show_3D_canvas()
+			self._show_3D_canvas(inputX, result)
 		else:
 			canvas_type = "Unshow canvas"
-			self.unshow_canvas()
-		self.component.print_to_result(canvas_type)
+			self._unshow_canvas()
 
-	def show_2D_canvas(self):
-		self.graphic_2d_page.pack(expand=True)
-		self.graphic_3d_page.pack_forget()
-		self.no_graphic_page.pack_forget()
+
+	def _show_2D_canvas(self, inputX=None, result=None, weight=None):
+		# self.graphic_3d_page.pack_forget()
+		# self.no_graphic_page.pack_forget()
+		self.graphic_2d_frame.pack(expand=True)
+
+		self.graphic_2d_figure.clf()
+		fig = self.graphic_2d_figure.add_subplot(1, 1, 1)
+		self.__draw_2D_point(fig, inputX, result)
+		self.__draw_2D_line(fig, weight)
+
+		self.canvas_2d.draw()
+
+	def __draw_2D_point(self, fig, inputX=None, result=None):
+		# inputX = np.asarray([[0, 0], [0, 1], [1, 0], [1, 1]])
+		# result = [1, 1, 0, 1]
 		
-	def show_3D_canvas(self):
-		self.graphic_2d_page.pack_forget()
+		[fig.scatter(float(x[0]),float(x[1]), c=colors[int(result[index])]) for index, x in enumerate(inputX)]
+		fig.set_title ("Estimation Grid", fontsize=16)
+		fig.set_ylabel("X2", fontsize=14)
+		fig.set_xlabel("X1", fontsize=14)
+
+	def __draw_2D_line(self, fig=None, weight=None):
+		# weight = np.asarray([[-0.8, 1, -0.2]])
+
+		x = np.arange(-2, 2, 0.1)
+		for i in range(weight.shape[0]):
+			slope = -(weight[i][0]/weight[i][1])
+			intercept = weight[i][2]/weight[i][1]
+			print(slope, intercept)
+			fig.plot(x, slope*x + intercept)
+		pass
+
+	def _show_3D_canvas(self, result):
+		self.graphic_2d_frame.pack_forget()
+		self.no_graphic_page.pack_forget()
 		self.graphic_3d_page.pack(expand=True)
-		self.no_graphic_page.pack_forget()
 		
-	def unshow_canvas(self):
-		self.graphic_2d_page.pack_forget()
+	def _unshow_canvas(self):
+		self.graphic_2d_frame.pack_forget()
 		self.graphic_3d_page.pack_forget()
 		self.no_graphic_page.pack(expand=True)

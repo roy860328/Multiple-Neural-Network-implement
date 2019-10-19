@@ -29,7 +29,7 @@ class GUI():
 		MLPPages(page2, args[0])
 		main_notebook.add(page2, text="MultilayerPerceptron")
 
-		main_notebook.select(page1)
+		main_notebook.select(page2)
 
 	def run_GUI(self):
 		self.interface.mainloop()

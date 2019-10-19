@@ -12,11 +12,13 @@ class NeuronsLayer():
 	def __init__(self, shape):
 		self.weight = np.random.rand(shape[0], shape[1])
 		self.result = np.zeros((shape[0], 1))
+		self.deltas = np.zeros((shape[0], 1))
 	def __call__(self):
 		return self.weight
 	def __str__(self):
 		return np.array2string(self.weight)
 
+		
 class LayersImplement(object):
 	"""docstring for LayersImplement"""
 	def __init__(self):

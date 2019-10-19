@@ -58,7 +58,7 @@ class PageComponent(object):
 		self.set_ler_checkbtn.pack(side=tk.LEFT)
 		self.max_epoches = tk.Entry(panel)
 		self.max_epoches.config(width=7)
-		self.max_epoches.insert(tk.END, 100)
+		self.max_epoches.insert(tk.END, 1000)
 		self.max_epoches.pack(side=tk.LEFT)
 	def convergence_condition_min_error_rate(self, panel):
 		self.set_ler_checkbtn = tk.Checkbutton(panel, text="Least Error Rate: ", variable=self.is_condition_max_epoches, command=self.switch_convergence_condition, onvalue = 2, offvalue = 1)
@@ -168,11 +168,7 @@ class Graph():
 		self.graphic_2d_figure = Figure(figsize=(6, 6), dpi=100)
 		self.canvas_2d = FigureCanvasTkAgg(self.graphic_2d_figure, self.graphic_2d_frame)
 		self.canvas_2d.get_tk_widget().pack(fill=tk.BOTH, expand=False, padx=2, pady=3)
-		# self.frame = tk.Frame(self.root)
-		# self.frame.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
-		# self.f = Figure(figsize=(3, 3), dpi=100)
-		# self.canvas = FigureCanvasTkAgg(self.f, master=self.frame)
-		# self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=2, pady=3)
+
 	def creat_3D_canvas(self):
 		self.graphic_3d_page = tk.Frame(self.root)
 		figure = Figure(figsize=(6, 6), dpi=100)
@@ -192,8 +188,7 @@ class Graph():
 		canvas_type = ""
 		if dim == 2:
 			canvas_type = "Show 2D canvas"
-			print(weights[0]())
-			self._show_2D_canvas(inputX, result, weights[0]())
+			self._show_2D_canvas(inputX, result, weights)
 		elif dim == 3:
 			canvas_type = "Show 3D canvas"
 			self._show_3D_canvas(inputX, result)
@@ -202,7 +197,7 @@ class Graph():
 			self._unshow_canvas()
 
 
-	def _show_2D_canvas(self, inputX=None, result=None, weight=None):
+	def _show_2D_canvas(self, inputX=None, result=None, weights=None):
 		# self.graphic_3d_page.pack_forget()
 		# self.no_graphic_page.pack_forget()
 		self.graphic_2d_frame.pack(expand=True)
@@ -210,29 +205,27 @@ class Graph():
 		self.graphic_2d_figure.clf()
 		fig = self.graphic_2d_figure.add_subplot(1, 1, 1)
 		self.__draw_2D_point(fig, inputX, result)
-		self.__draw_2D_line(fig, weight)
+		self.__draw_2D_line(fig, weights)
 
 		self.canvas_2d.draw()
 
 	def __draw_2D_point(self, fig, inputX=None, result=None):
-		# inputX = np.asarray([[0, 0], [0, 1], [1, 0], [1, 1]])
-		# result = [1, 1, 0, 1]
 		
 		[fig.scatter(float(x[0]),float(x[1]), c=colors[int(result[index])]) for index, x in enumerate(inputX)]
 		fig.set_title ("Estimation Grid", fontsize=16)
 		fig.set_ylabel("X2", fontsize=14)
 		fig.set_xlabel("X1", fontsize=14)
 
-	def __draw_2D_line(self, fig=None, weight=None):
-		# weight = np.asarray([[-0.8, 1, -0.2]])
-
+	def __draw_2D_line(self, fig=None, weights=None):
+		if len(weights) > 1:
+			return
+		weight = weights[0]()
 		x = np.arange(-2, 2, 0.1)
 		for i in range(weight.shape[0]):
 			slope = -(weight[i][0]/weight[i][1])
 			intercept = weight[i][2]/weight[i][1]
 			print(slope, intercept)
 			fig.plot(x, slope*x + intercept)
-		pass
 
 	def _show_3D_canvas(self, result):
 		self.graphic_2d_frame.pack_forget()

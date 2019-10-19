@@ -1,3 +1,5 @@
+import numpy as np
+
 from . import basic
 from neuralnetwork.neurons import neurons as ns
 from utils import utils 
@@ -17,18 +19,12 @@ class SimplePerceptron(basic.Basic):
 		super(SimplePerceptron, self).run()
 
 	def _initial_neurons(self, hidden_layers):
-		super(SimplePerceptron, self)._initial_neurons(hidden_layers)
-		dim = self.data.ori_data.shape[1]
+		dim = self.data.x.shape[1] + 1
 		network_architecture = []
-		''' hidden layers '''
-		for layer_number in hidden_layers:
-			network_architecture.append((layer_number, dim))
-			dim = layer_number
-		print(network_architecture)
-		self.weights = ns.LayersImplement().create_neurons_layer(network_architecture)
-		self.page.page_component.print_to_result("\n=== Init weights ===")
-		self.page.page_component.print_to_result(self.weights)
-
+		''' output layers '''
+		network_architecture.append((hidden_layers[0], dim))
+		
+		super(SimplePerceptron, self)._initial_neurons(network_architecture)
 
 	def start_training(self): 
 		super(SimplePerceptron, self).start_training()
@@ -38,6 +34,8 @@ class SimplePerceptron(basic.Basic):
 			pass
 
 	def _adjust_weight(self, intputX, exceptY):
+		intputX = np.insert(intputX, len(intputX), -1)
+		# print(intputX)
 		if self.weights[0].result[0] == 0 and exceptY != 0:
 			self.weights[0].weight = self.weights[0].weight + self.learning_rate * intputX
 		elif self.weights[0].result[0] == 1 and exceptY != 1:
@@ -45,3 +43,11 @@ class SimplePerceptron(basic.Basic):
 
 	def _pass_activation_function(self, weight_output):
 		return utils.sign(weight_output)
+
+	def _cal_correct_rate(self, datasetX, datasetY):
+		super(SimplePerceptron, self)._cal_correct_rate(datasetX, datasetY)
+		
+		result = self._forward_propagation(datasetX)
+		correct_n = sum(result == datasetY)
+		correct_rate = round(correct_n/datasetY.shape[0]*100, 4)
+		return result, correct_n, correct_rate

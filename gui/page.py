@@ -64,10 +64,10 @@ class SimplePerceptronPages(Pages):
 		kwargs = dict(data=self.page_component.dataset_list[self.page_component.data_selection.get()],
 					  initial_learning_rate=float(self.page_component.learning_rate.get()),
 					  max_epoches=int(self.page_component.max_epoches.get()),
-					  least_error_rate=float(self.page_component.least_error_rate.get()),
+					  least_correct_rate=float(self.page_component.least_correct_rate.get()),
 					  )
 		if (self.page_component.is_condition_max_epoches.get()==2):
-			kwargs["mode"] = "least_error_rate"
+			kwargs["mode"] = "least_correct_rate"
 		self.neural_network = simpleperceptron.SimplePerceptron(self, **kwargs)
 		self.neural_network.run()
 
@@ -107,9 +107,6 @@ class MLPPages(Pages):
 		self.graph = Graph(self.graph_frame)
 		self.graph_frame.pack(side=tk.RIGHT, fill=tk.BOTH, padx=2, pady=3)
 
-		# self.page_component.graph_None()
-		# self.page_component.graph_2D(self.root)
-		# self.page_component.graph_3D()
 	def start_to_train(self):
 		self.page_component.print_to_result("\n\n\n=== Start to Train ===")
 
@@ -118,10 +115,10 @@ class MLPPages(Pages):
 					hidden_neurons=list(map(int, self.page_component.hidden_layer.get().split(" "))),
 					initial_learning_rate=float(self.page_component.learning_rate.get()),
 					max_epoches=int(self.page_component.max_epoches.get()),
-					least_error_rate=float(self.page_component.least_error_rate.get()),
+					least_correct_rate=float(self.page_component.least_correct_rate.get()),
 					)
 		if (self.page_component.is_condition_max_epoches.get()==2):
-			kwargs["mode"] = "least_error_rate"
+			kwargs["mode"] = "least_correct_rate"
 		self.neural_network = mlp.MLP(self, **kwargs)
 		self.neural_network.run()
 

@@ -1,5 +1,6 @@
 import numpy as np
 import collections
+import sys
 
 ''' 
 Data Process only with y's 1 dimension
@@ -13,12 +14,12 @@ class Data():
 		self.pre_process_data()
 		data_split = round(self.ori_data.shape[0]*2/3)
 
-		# self.x = np.insert(self.ori_data, -1, -1, axis=1)
-		# self.x = self.x[:,0:-1]
 		self.x = self.ori_data[:,0:-1]
 		self.labels = self.ori_data[:,-1]
 		self.train_x = self.x[0:data_split]
 		self.train_y = self.labels[0:data_split]
+		# self.train_x = self.x[:]
+		# self.train_y = self.labels[:]
 		self.test_x = self.x[data_split:]
 		self.test_y = self.labels[data_split:]
 
@@ -41,11 +42,21 @@ class Data():
 		self.label_set.sort()
 		for index, objection in enumerate(self.label_set):
 			labels = [index if label==objection else label for label in labels]
-		self.label_number = np.arange(len(self.label_set))
+		self.label_list = np.arange(len(self.label_set))
 		self.ori_data[:,-1] = labels
 
-	def get_label_number(self):
-		return self.label_number
+	'''
+	[0, 1]
+	[0, 1, 2]
+	'''
+	def get_label_list(self):
+		return self.label_list
+	'''
+	2
+	3
+	'''
+	def get_label_range(self):
+		return len(self.label_list)
 	def get_label_index(self, label):
 		# print(label)
 		# print(self.label_set)

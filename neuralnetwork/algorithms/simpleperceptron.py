@@ -7,9 +7,9 @@ from utils import utils
 
 class SimplePerceptron(basic.Basic):
 
-	def __init__(self, *page, data, hidden_neurons=[1], initial_learning_rate=0.8, max_epoches=10, least_error_rate=None, mode="max_epoches"):
+	def __init__(self, *page, data, hidden_neurons=[1], initial_learning_rate=0.8, max_epoches=10, least_correct_rate=None, mode="max_epoches"):
 		hidden_neurons = [1]
-		super().__init__(data, initial_learning_rate, max_epoches, least_error_rate, mode, *page)
+		super().__init__(data, initial_learning_rate, max_epoches, least_correct_rate, mode, *page)
 		self.page = page[0]
 		self.page.page_component.print_to_result("Init: SimplePerceptron")
 		self._initial_neurons(hidden_neurons)
@@ -46,8 +46,8 @@ class SimplePerceptron(basic.Basic):
 
 	def _cal_correct_rate(self, datasetX, datasetY):
 		super(SimplePerceptron, self)._cal_correct_rate(datasetX, datasetY)
-		
+
 		result = self._forward_propagation(datasetX)
 		correct_n = sum(result == datasetY)
 		correct_rate = round(correct_n/datasetY.shape[0]*100, 4)
-		return result, correct_n, correct_rate
+		return result, correct_n, correct_rate, 0

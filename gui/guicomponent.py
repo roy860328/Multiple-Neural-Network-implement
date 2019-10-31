@@ -9,7 +9,7 @@ from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 
 
-colors = ['maroon', 'goldenrod', 'red', 'darkorange', 'peachpuff']
+colors = ['maroon', 'goldenrod', 'red', 'darkorange', 'peachpuff', 'k']
 
 
 class PageComponent(object):
@@ -37,20 +37,20 @@ class PageComponent(object):
 		panel = tk.LabelFrame(self.root, text="Learning Rate: ")
 		self.learning_rate = tk.Entry(panel)
 		self.learning_rate.config(width=5)
-		self.learning_rate.insert(tk.END, 0.1)
+		self.learning_rate.insert(tk.END, 0.05)
 		self.learning_rate.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 
 	''' 
 	convergence condition 
-	rellated function: convergence_condition_max_epoches, convergence_condition_min_error_rate, switch_convergence_condition
+	rellated function: convergence_condition_max_epoches, convergence_condition_min_correct_rate, switch_convergence_condition
 	'''
 	def convergence_condition(self):
-		panel = tk.LabelFrame(self.root, text="Convergence Condition: max_epoches, min_error_rate")
+		panel = tk.LabelFrame(self.root, text="Convergence Condition: max_epoches, min_correct_rate")
 		self.is_condition_max_epoches = tk.IntVar()
 		self.is_condition_max_epoches.set(1)
 		self.convergence_condition_max_epoches(panel)
-		self.convergence_condition_min_error_rate(panel)
+		self.convergence_condition_min_correct_rate(panel)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 
 	def convergence_condition_max_epoches(self, panel):
@@ -60,22 +60,22 @@ class PageComponent(object):
 		self.max_epoches.config(width=7)
 		self.max_epoches.insert(tk.END, 1000)
 		self.max_epoches.pack(side=tk.LEFT)
-	def convergence_condition_min_error_rate(self, panel):
-		self.set_ler_checkbtn = tk.Checkbutton(panel, text="Least Error Rate: ", variable=self.is_condition_max_epoches, command=self.switch_convergence_condition, onvalue = 2, offvalue = 1)
+	def convergence_condition_min_correct_rate(self, panel):
+		self.set_ler_checkbtn = tk.Checkbutton(panel, text="Least Correct Rate: ", variable=self.is_condition_max_epoches, command=self.switch_convergence_condition, onvalue = 2, offvalue = 1)
 		self.set_ler_checkbtn.pack(side=tk.LEFT)
-		self.least_error_rate = tk.Entry(panel)
-		self.least_error_rate.insert(tk.END, 0)
-		self.least_error_rate.config(width=3, state='disable')
-		self.least_error_rate.pack(side=tk.LEFT)
+		self.least_correct_rate = tk.Entry(panel)
+		self.least_correct_rate.insert(tk.END, 80)
+		self.least_correct_rate.config(width=3, state='disable')
+		self.least_correct_rate.pack(side=tk.LEFT)
 		tk.Label(panel, text="%").pack(side=tk.LEFT)
 
 	def switch_convergence_condition(self):
 		if self.is_condition_max_epoches.get() == 1:
 			self.max_epoches.config(state='normal')
-			self.least_error_rate.config(state='disable')
+			self.least_correct_rate.config(state='disable')
 		else:
 			self.max_epoches.config(state='disable')
-			self.least_error_rate.config(state='normal')
+			self.least_correct_rate.config(state='normal')
 
 	'''
 
@@ -84,7 +84,7 @@ class PageComponent(object):
 		panel = tk.LabelFrame(self.root, text="Neurons Hidden Layers: ")
 		self.hidden_layer = tk.Entry(panel)
 		self.hidden_layer.config(width=30)
-		self.hidden_layer.insert(tk.END, (4,3))
+		self.hidden_layer.insert(tk.END, (5, 5, 5))
 		self.hidden_layer.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 	'''
@@ -210,7 +210,8 @@ class Graph():
 		self.canvas_2d.draw()
 
 	def __draw_2D_point(self, fig, inputX=None, result=None):
-		
+		# print(inputX)
+		# print(result)
 		[fig.scatter(float(x[0]),float(x[1]), c=colors[int(result[index])]) for index, x in enumerate(inputX)]
 		fig.set_title ("Estimation Grid", fontsize=16)
 		fig.set_ylabel("X2", fontsize=14)

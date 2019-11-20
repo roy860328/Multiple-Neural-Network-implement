@@ -1,7 +1,8 @@
 import numpy as np
 import collections
 import sys
-
+import abc
+import time
 ''' 
 Data Process only with y's 1 dimension
 add extra number -1 in array, let input add one dimension 
@@ -65,6 +66,58 @@ class Data():
 	def get_x_with_bias(self):
 		pass
 
+class BasicActivation():
+	def __init__(self):
+		pass
+	@abc.abstractmethod
+	def activate(self, weight_output):
+		pass
+
+	@abc.abstractmethod
+	def getOutputDeltas(self, except_labels, weight_output):
+		pass
+	@abc.abstractmethod
+	def getHiddenDeltas(self, deltasK, outputY, weightK):
+		pass
+
+class Sigmoid(BasicActivation):
+	def __init__(self):
+		pass
+	def activate(self, weight_output):
+		return 1 / (1 + np.exp(-weight_output))
+
+	def getOutputDeltas(self, except_labels, weight_output):
+		return (except_labels - weight_output) * weight_output * (1 - weight_output)
+	
+	def getHiddenDeltas(self, deltasK, weight_output, weightK): 
+		weightK = np.copy( np.delete(weightK, weightK.shape[1]-1, axis=1) )
+		sum_deltasK_dot_weightK = np.sum(weightK*deltasK, axis=0).reshape((-1, 1))
+		return weight_output * (1 - weight_output) * sum_deltasK_dot_weightK
+
+class ReLU(BasicActivation):
+	def __init__(self):
+		pass
+	def activate(self, weight_output):
+		# print(weight_output)
+		# time.sleep(0.001)
+		# print(np.maximum(0, weight_output))
+		return np.maximum(0, weight_output)
+
+	def getOutputDeltas(self, except_labels, weight_output):
+		# print(weight_output)
+		except_labels = except_labels - weight_output
+		# print(except_labels)
+		except_labels[weight_output<0] = 0
+		return except_labels
+	
+	def getHiddenDeltas(self, deltasK, weight_output, weightK): 
+		weightK = np.copy( np.delete(weightK, weightK.shape[1]-1, axis=1) )
+		sum_deltasK_dot_weightK = np.sum(weightK*deltasK, axis=0).reshape((-1, 1))
+
+		sum_deltasK_dot_weightK[weight_output<0] = 0
+		# print(sum_deltasK_dot_weightK)
+		return sum_deltasK_dot_weightK
+
 
 def sign(weight_output):
 	return list(map(lambda label: 1 if label > 0 else 0, weight_output.flatten()))
@@ -72,3 +125,7 @@ def sign(weight_output):
 def sigmoid(weight_output):
 	return 1 / (1 + np.exp(-weight_output))
 	# return np.asarray( list(map(lambda result: 1 / (1 + np.exp(-result)), weight_output.flatten())) )
+
+def relu(weight_output):
+	return np.maximum(0, weight_output)
+

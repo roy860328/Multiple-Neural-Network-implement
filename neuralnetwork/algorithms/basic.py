@@ -32,7 +32,7 @@ class Basic(abc.ABC, threading.Thread):
 		## Test result
 		self.page.page_component.print_to_result("\n=== Calculate correct rate ===")
 		_, _      = self.__cal_correct_rate("\nTraining", self.data.train_x, self.data.train_y)
-		# _      = self.__cal_correct_rate("Testing", self.data.test_x, self.data.test_y)
+		_, _      = self.__cal_correct_rate("Testing", self.data.test_x, self.data.test_y)
 		result, _ = self.__cal_correct_rate("\nAll", self.data.x, self.data.labels)
 		## Draw to canvas
 		self.page.page_component.print_to_result("\n=== Draw esult ===")
@@ -70,12 +70,15 @@ class Basic(abc.ABC, threading.Thread):
 	def _initial_neurons(self, network_architecture):
 		self.weights = ns.LayersImplement().create_neurons_layer(network_architecture)
 		self.page.page_component.print_to_result("\n=== Init weights ===")
+		self.page.page_component.print_to_result(network_architecture)
 		self.page.page_component.print_to_result(self.weights)
 	
 	def _train_step(self):
 		for index in range(len(self.data.train_x)):
 			self._forward_propagation(self.data.train_x[index])
 			self._adjust_weight(self.data.train_x[index], self.data.train_y[index])
+			# self.page.page_component.print_to_result(self.weights)
+			# self.page.page_component.print_to_result(self.weights[-1].result)
 
 	def _forward_propagation(self, intputX):
 		if(intputX.ndim == 1):
@@ -91,6 +94,7 @@ class Basic(abc.ABC, threading.Thread):
 			weight.result = self._pass_activation_function(weight.result)
 			# print(weight.result)
 			intputX = weight.result
+		# print(intputX)
 		return intputX
 
 	""" compare current output with data """
@@ -101,7 +105,8 @@ class Basic(abc.ABC, threading.Thread):
 		result, correct_n, correct_rate, self.RMSE = self._cal_correct_rate(datasetX, datasetY)
 
 		self.page.page_component.print_to_result("{} Data correct rate: {}/{}, {}%  \nError rate                : {}%  \nRMSE                      : {}"\
-													 .format(dataformat, correct_n, datasetY.shape[0], correct_rate, 100-round(correct_rate, 3), round(self.RMSE, 5)) )
+													 .format(dataformat, correct_n, datasetY.shape[0], correct_rate, 100-round(correct_rate, 3), round(self.RMSE, 10)) )
+		# self.page.page_component.print_to_result(self.weights)
 		return result, correct_rate
 
 	@abc.abstractmethod

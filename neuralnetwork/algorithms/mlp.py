@@ -13,7 +13,10 @@ class MLP(basic.Basic):
 		super().__init__(data, initial_learning_rate, max_epoches, least_correct_rate, mode, *page)
 		self.page = page[0]
 		self.page.page_component.print_to_result("Init: MLP")
+		self.activation = utils.ReLU()
+		self.activation = utils.Sigmoid()
 		self._initial_neurons(hidden_neurons)
+
 
 	''' Call by thread '''
 	def run(self):
@@ -72,15 +75,14 @@ class MLP(basic.Basic):
 		# self._print("\n\nexceptY", exceptY)
 		# self._print("except_labels", except_labels)
 		# self._print("outputY", outputY)
-		weight.deltas = (except_labels - outputY) * outputY * (1 - outputY)
+		weight.deltas = self.activation.getOutputDeltas(except_labels, outputY)
+		# print(except_labels)
 
 	def _back_propagation_hidden_layer(self, deltasK, outputY, weightK, weightJ):
 		### 對weightK降維，因為weightJ不需要更新bias(weightJ輸出Y的維度有多1維bias為-1)
 		# self._print("weightK", weightK)
-		weightK = np.copy( np.delete(weightK, weightK.shape[1]-1, axis=1) )
-		# self._print("weightK", weightK)
-		sum_deltasK_dot_weightK = np.sum(weightK*deltasK, axis=0).reshape((-1, 1))
-		weightJ.deltas = outputY * (1 - outputY) * sum_deltasK_dot_weightK
+		weightJ.deltas = self.activation.getHiddenDeltas(deltasK, outputY, weightK)
+		# print(weightJ.deltas)
 
 	def _update_weight(self, intputX):
 		if(intputX.ndim == 1):
@@ -95,16 +97,24 @@ class MLP(basic.Basic):
 			weightI = weight
 
 	def _pass_activation_function(self, weight_output):
-		return utils.sigmoid(weight_output)
+		# print( weight_output)
+		# print (np.maximum(0, weight_output))
+		return self.activation.activate(weight_output)
+		# return utils.sigmoid(weight_output)
 
 	def _cal_correct_rate(self, datasetX, datasetY):
 		super(MLP, self)._cal_correct_rate(datasetX, datasetY)
+		# self.page.page_component.print_to_result(self.weights)
 		
 		result = self._forward_propagation(datasetX)
 		RMSE = self._cal_RMSE(result, datasetY)
+		# print(datasetY)
+		# print(result)
+		# print(result.shape)
 		result[result > 0.5] = 1
 		result[result < 0.5] = 0
 		output_transform = self._transform_output_to_label(result)
+		# print(output_transform)
 		# self._print("output_transform", output_transform)
 		# self._print("result", result)
 		# self._print("datasetY", datasetY)

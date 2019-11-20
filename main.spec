@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\neural-network\\homework1'],
+             pathex=['D:\\neural-network\\108522092_蔡政育＿作業二'],
              binaries=[],
              datas=[],
              hiddenimports=[],

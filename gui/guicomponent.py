@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 import threading 
+from pprint import pprint
 
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -143,6 +144,7 @@ class PageComponent(object):
 			input_obj = np.array2string(input_obj)
 
 		print(input_obj)
+		# pprint(input_obj)
 		self.console.config(state='normal')
 		self.console.insert(tk.END, input_obj + '\n')
 		self.console.config(state='disable')

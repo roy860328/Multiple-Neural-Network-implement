@@ -9,7 +9,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from mpl_toolkits.mplot3d import Axes3D
 
-
 colors = ['maroon', 'goldenrod', 'red', 'darkorange', 'peachpuff', 'k']
 
 
@@ -59,7 +58,7 @@ class PageComponent(object):
 		self.set_ler_checkbtn.pack(side=tk.LEFT)
 		self.max_epoches = tk.Entry(panel)
 		self.max_epoches.config(width=7)
-		self.max_epoches.insert(tk.END, 1000)
+		self.max_epoches.insert(tk.END, 5000)
 		self.max_epoches.pack(side=tk.LEFT)
 	def convergence_condition_min_correct_rate(self, panel):
 		self.set_ler_checkbtn = tk.Checkbutton(panel, text="Least Correct Rate: ", variable=self.is_condition_max_epoches, command=self.switch_convergence_condition, onvalue = 2, offvalue = 1)
@@ -81,11 +80,11 @@ class PageComponent(object):
 	'''
 
 	'''
-	def neurons_layers(self):
+	def neurons_layers(self, nn_structure=(5, 5, 5)):
 		panel = tk.LabelFrame(self.root, text="Neurons Hidden Layers: ")
 		self.hidden_layer = tk.Entry(panel)
-		self.hidden_layer.config(width=30)
-		self.hidden_layer.insert(tk.END, (5, 5, 5))
+		self.hidden_layer.config(width=25)
+		self.hidden_layer.insert(tk.END, nn_structure)
 		self.hidden_layer.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 	'''
@@ -185,12 +184,14 @@ class Graph():
 		tk.Label(self.no_graphic_page, text="").pack(expand=True)
 
 	''' Canvas controll '''
-	def draw_result(self, inputX=None, result=None, weights=None):
+	def draw_result(self, inputX=None, result=None, weights=None, draw_weight=False):
+		assert inputX.shape[0] == result.shape[0], "Error: inputX&Y size not same"
+
 		dim = inputX.shape[1]
 		canvas_type = ""
 		if dim == 2:
 			canvas_type = "Show 2D canvas"
-			self._show_2D_canvas(inputX, result, weights)
+			self._show_2D_canvas(inputX, result, weights, draw_weight)
 		elif dim == 3:
 			canvas_type = "Show 3D canvas"
 			self._show_3D_canvas(inputX, result)
@@ -199,7 +200,7 @@ class Graph():
 			self._unshow_canvas()
 
 
-	def _show_2D_canvas(self, inputX=None, result=None, weights=None):
+	def _show_2D_canvas(self, inputX=None, result=None, weights=None, draw_weight=False):
 		# self.graphic_3d_page.pack_forget()
 		# self.no_graphic_page.pack_forget()
 		self.graphic_2d_frame.pack(expand=True)
@@ -207,21 +208,18 @@ class Graph():
 		self.graphic_2d_figure.clf()
 		fig = self.graphic_2d_figure.add_subplot(1, 1, 1)
 		self.__draw_2D_point(fig, inputX, result)
-		self.__draw_2D_line(fig, weights)
+		if(len(weights)==1): self.__draw_2D_line(fig, weights)
+		if(draw_weight): self.__draw_weight_mesh(fig, weights)
 
 		self.canvas_2d.draw()
 
 	def __draw_2D_point(self, fig, inputX=None, result=None):
-		# print(inputX)
-		# print(result)
 		[fig.scatter(float(x[0]),float(x[1]), c=colors[int(result[index])]) for index, x in enumerate(inputX)]
 		fig.set_title ("Estimation Grid", fontsize=16)
 		fig.set_ylabel("X2", fontsize=14)
 		fig.set_xlabel("X1", fontsize=14)
 
 	def __draw_2D_line(self, fig=None, weights=None):
-		if len(weights) > 1:
-			return
 		weight = weights[0]()
 		x = np.arange(-2, 2, 0.1)
 		for i in range(weight.shape[0]):
@@ -230,6 +228,20 @@ class Graph():
 			print(slope, intercept)
 			fig.plot(x, slope*x + intercept)
 
+	def __draw_weight_mesh(self, fig=None, weights=None):
+		for i in range(weights[0].weight.shape[0]):
+			for j in range(len(weights)):
+				w = weights[i].weight[j]
+				# print(w)
+				if(i < weights[0].weight.shape[0]-1):
+					w1 = weights[i+1].weight[j]
+					fig.plot([w[0], w1[0]], [w[1], w1[1]], linestyle='-', c='black', linewidth=0.5, marker='o')
+				if(j < weights[0].weight.shape[1]-1):
+					w2 = weights[i].weight[j+1]
+					fig.plot([w[0], w2[0]], [w[1], w2[1]], linestyle='-', c='black', linewidth=0.5, marker='o')
+		# print(weights)
+		# print(len(weights))
+		# print(weights[0])
 	def _show_3D_canvas(self, result):
 		self.graphic_2d_frame.pack_forget()
 		self.no_graphic_page.pack_forget()

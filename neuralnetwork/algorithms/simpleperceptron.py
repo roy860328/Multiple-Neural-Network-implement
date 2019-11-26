@@ -5,7 +5,7 @@ from neuralnetwork.neurons import neurons as ns
 from utils import utils 
 
 
-class SimplePerceptron(basic.Basic):
+class SimplePerceptron(basic.BasicPerceptron):
 
 	def __init__(self, *page, data, hidden_neurons=[1], initial_learning_rate=0.8, max_epoches=10, least_correct_rate=None, mode="max_epoches"):
 		hidden_neurons = [1]
@@ -44,8 +44,8 @@ class SimplePerceptron(basic.Basic):
 	def _pass_activation_function(self, weight_output):
 		return utils.sign(weight_output)
 
-	def _cal_correct_rate(self, datasetX, datasetY):
-		super(SimplePerceptron, self)._cal_correct_rate(datasetX, datasetY)
+	def cal_correct_rate(self, datasetX, datasetY):
+		super(SimplePerceptron, self).cal_correct_rate(datasetX, datasetY)
 
 		result = self._forward_propagation(datasetX)
 		correct_n = sum(result == datasetY)

@@ -7,7 +7,7 @@ from neuralnetwork.neurons import neurons as ns
 from utils import utils
 
 
-class MLP(basic.Basic):
+class MLP(basic.BasicPerceptron):
 
 	def __init__(self, *page, data, hidden_neurons=[1], initial_learning_rate=0.8, max_epoches=10, least_correct_rate=None, mode="max_epoches"):
 		super().__init__(data, initial_learning_rate, max_epoches, least_correct_rate, mode, *page)
@@ -102,8 +102,8 @@ class MLP(basic.Basic):
 		return self.activation.activate(weight_output)
 		# return utils.sigmoid(weight_output)
 
-	def _cal_correct_rate(self, datasetX, datasetY):
-		super(MLP, self)._cal_correct_rate(datasetX, datasetY)
+	def cal_correct_rate(self, datasetX, datasetY):
+		super(MLP, self).cal_correct_rate(datasetX, datasetY)
 		# self.page.page_component.print_to_result(self.weights)
 		
 		result = self._forward_propagation(datasetX)

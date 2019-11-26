@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 
-from .page import SimplePerceptronPages, MLPPages
+from .page import SimplePerceptronPages, MLPPages, SOMPages
 
 
 class GUI():
@@ -29,7 +29,11 @@ class GUI():
 		MLPPages(page2, args[0])
 		main_notebook.add(page2, text="MultilayerPerceptron")
 
-		main_notebook.select(page2)
+		page3 = tk.Frame(main_notebook)
+		SOMPages(page3, args[0])
+		main_notebook.add(page3, text="SOM")
+
+		main_notebook.select(page3)
 
 	def run_GUI(self):
 		self.interface.mainloop()

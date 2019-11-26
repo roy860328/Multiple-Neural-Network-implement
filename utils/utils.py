@@ -63,8 +63,8 @@ class Data():
 		# print(self.label_set)
 		return self.label_set.index(label)
 
-	def get_x_with_bias(self):
-		pass
+	def shuffle_data(self):
+		np.random.shuffle(self.train_x)
 
 class BasicActivation():
 	def __init__(self):

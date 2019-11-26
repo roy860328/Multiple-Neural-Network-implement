@@ -3,8 +3,8 @@ import os
 from os.path import isfile, join
 
 def main():
-	data = read_file("data/basic")
-	data.update(read_file("data/advanced"))
+	data = read_file("data/PerceptDataSet/basic")
+	data.update(read_file("data/PerceptDataSet/advanced"))
 	gui = GUI(data)
 	gui.run_GUI()
 

@@ -16,5 +16,7 @@ python3 main.py
 # Library Requirement
 
 numpy
+
 tkinter
+
 matplot

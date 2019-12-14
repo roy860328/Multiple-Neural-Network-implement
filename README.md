@@ -1,10 +1,10 @@
-# Multiple-Neural-Network-implement
+# Neural-Network-Implement
 An assignment of Neural Network in NCU CSIE
 
 # how to run 
 1.open cmd
 ```
-cd Multiple-Neural-Network_homework
+cd Neural-Network-Implement
 ```
 2.run main.py file
 ```

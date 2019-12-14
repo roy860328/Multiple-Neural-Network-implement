@@ -12,7 +12,7 @@ class GUI():
 		self.interface.title("Neural Network GUI")
 		self.interface.geometry("1000x500")
 		self.interface.resizable(False, False)
-
+		
 		self.base_frame = tk.Frame(master=self.interface)
 		self.base_frame.pack()
 		self._init_windows(args)

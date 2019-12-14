@@ -6,6 +6,7 @@ def main():
 	data = read_file("data/PerceptDataSet/basic")
 	data.update(read_file("data/PerceptDataSet/advanced"))
 	gui = GUI(data)
+	# gui.interface.mainloop()
 	gui.run_GUI()
 
 def read_file(files_path):

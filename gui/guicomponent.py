@@ -33,11 +33,11 @@ class PageComponent(object):
 	'''
 
 	'''
-	def learning_rate(self):
+	def learning_rate(self, learn_rate=0.05):
 		panel = tk.LabelFrame(self.root, text="Learning Rate: ")
 		self.learning_rate = tk.Entry(panel)
 		self.learning_rate.config(width=5)
-		self.learning_rate.insert(tk.END, 0.05)
+		self.learning_rate.insert(tk.END, learn_rate)
 		self.learning_rate.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 
@@ -45,20 +45,20 @@ class PageComponent(object):
 	convergence condition 
 	rellated function: convergence_condition_max_epoches, convergence_condition_min_correct_rate, switch_convergence_condition
 	'''
-	def convergence_condition(self):
+	def convergence_condition(self, epoches=1000):
 		panel = tk.LabelFrame(self.root, text="Convergence Condition: max_epoches, min_correct_rate")
 		self.is_condition_max_epoches = tk.IntVar()
 		self.is_condition_max_epoches.set(1)
-		self.convergence_condition_max_epoches(panel)
+		self.convergence_condition_max_epoches(panel, epoches)
 		self.convergence_condition_min_correct_rate(panel)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
 
-	def convergence_condition_max_epoches(self, panel):
+	def convergence_condition_max_epoches(self, panel, epoches):
 		self.set_ler_checkbtn = tk.Checkbutton(panel, text="Max Epoches", variable=self.is_condition_max_epoches, command=self.switch_convergence_condition, onvalue = 1, offvalue = 2)
 		self.set_ler_checkbtn.pack(side=tk.LEFT)
 		self.max_epoches = tk.Entry(panel)
 		self.max_epoches.config(width=7)
-		self.max_epoches.insert(tk.END, 5000)
+		self.max_epoches.insert(tk.END, epoches)
 		self.max_epoches.pack(side=tk.LEFT)
 	def convergence_condition_min_correct_rate(self, panel):
 		self.set_ler_checkbtn = tk.Checkbutton(panel, text="Least Correct Rate: ", variable=self.is_condition_max_epoches, command=self.switch_convergence_condition, onvalue = 2, offvalue = 1)
@@ -83,7 +83,7 @@ class PageComponent(object):
 	def neurons_layers(self, nn_structure=(5, 5, 5)):
 		panel = tk.LabelFrame(self.root, text="Neurons Hidden Layers: ")
 		self.hidden_layer = tk.Entry(panel)
-		self.hidden_layer.config(width=25)
+		self.hidden_layer.config(width=30)
 		self.hidden_layer.insert(tk.END, nn_structure)
 		self.hidden_layer.pack(side=tk.LEFT)
 		panel.pack(fill=tk.BOTH, padx=1, pady=3, ipadx=2, ipady=5)
@@ -91,6 +91,7 @@ class PageComponent(object):
 
 	'''
 	def execution_button(self, start_to_train, stop_to_start):
+
 		panel = tk.LabelFrame(self.root, text="Execution: ")
 		self.execute = tk.Button(panel, text='Train', width=10, height=2, padx=5, command=start_to_train)
 		self.execute.pack(side=tk.LEFT)
@@ -141,7 +142,9 @@ class PageComponent(object):
 			# 	pass
 		elif isinstance(input_obj, np.ndarray):
 			input_obj = np.array2string(input_obj)
-
+		else:
+			print(input_obj)
+			return	
 		print(input_obj)
 		# pprint(input_obj)
 		self.console.config(state='normal')
@@ -191,20 +194,17 @@ class Graph():
 		canvas_type = ""
 		if dim == 2:
 			canvas_type = "Show 2D canvas"
-			self._show_2D_canvas(inputX, result, weights, draw_weight)
+			self._show_2D_canvas()
+			self._plot_2D_canvas(inputX, result, weights, draw_weight)
 		elif dim == 3:
 			canvas_type = "Show 3D canvas"
-			self._show_3D_canvas(inputX, result)
+			self._show_3D_canvas()
 		else:
 			canvas_type = "Unshow canvas"
 			self._unshow_canvas()
 
-
-	def _show_2D_canvas(self, inputX=None, result=None, weights=None, draw_weight=False):
-		# self.graphic_3d_page.pack_forget()
-		# self.no_graphic_page.pack_forget()
-		self.graphic_2d_frame.pack(expand=True)
-
+	def _plot_2D_canvas(self, inputX=None, result=None, weights=None, draw_weight=False):
+		
 		self.graphic_2d_figure.clf()
 		fig = self.graphic_2d_figure.add_subplot(1, 1, 1)
 		self.__draw_2D_point(fig, inputX, result)
@@ -232,22 +232,24 @@ class Graph():
 		for i in range(weights[0].weight.shape[0]):
 			for j in range(len(weights)):
 				w = weights[i].weight[j]
-				# print(w)
-				if(i < weights[0].weight.shape[0]-1):
+				### 右
+				if(i < len(weights)-1):
 					w1 = weights[i+1].weight[j]
-					fig.plot([w[0], w1[0]], [w[1], w1[1]], linestyle='-', c='black', linewidth=0.5, marker='o')
-				if(j < weights[0].weight.shape[1]-1):
+					fig.plot([w[0], w1[0]], [w[1], w1[1]], linestyle='-', c='g', linewidth=0.5, marker='o')
+				### 下
+				if(j < weights[0].weight.shape[0]-1):
 					w2 = weights[i].weight[j+1]
-					fig.plot([w[0], w2[0]], [w[1], w2[1]], linestyle='-', c='black', linewidth=0.5, marker='o')
-		# print(weights)
-		# print(len(weights))
-		# print(weights[0])
-	def _show_3D_canvas(self, result):
+					fig.plot([w[0], w2[0]], [w[1], w2[1]], linestyle='-', c='g', linewidth=0.5, marker='o')
+
+	def _show_2D_canvas(self):
+		self.graphic_2d_frame.pack(expand=True)
+
+	def _show_3D_canvas(self):
 		self.graphic_2d_frame.pack_forget()
-		self.no_graphic_page.pack_forget()
-		self.graphic_3d_page.pack(expand=True)
+		# self.no_graphic_page.pack_forget()
+		# self.graphic_3d_page.pack(expand=True)
 		
 	def _unshow_canvas(self):
 		self.graphic_2d_frame.pack_forget()
-		self.graphic_3d_page.pack_forget()
-		self.no_graphic_page.pack(expand=True)
+		# self.graphic_3d_page.pack_forget()
+		# self.no_graphic_page.pack(expand=True)

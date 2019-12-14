@@ -9,8 +9,11 @@ class Neuron():
 ''' Layers type'''
 class NeuronsLayer():
 	"""docstring for Neuron"""
-	def __init__(self, shape):
-		self.weight = np.random.rand(shape[0], shape[1])
+	def __init__(self, shape, random_range=None):
+		if(random_range):
+			self.weight = np.random.uniform(low=random_range[0], high=random_range[1], size=(shape[0], shape[1]))
+		else:
+			self.weight = np.random.rand(shape[0], shape[1])
 		self.result = np.zeros((shape[0], 1))
 		self.deltas = np.zeros((shape[0], 1))
 	def __call__(self):
@@ -24,7 +27,7 @@ class LayersImplement(object):
 	def __init__(self):
 		super(LayersImplement, self).__init__()
 	'''  '''
-	def create_neurons_layer(self, hidden_neurons):
+	def create_neurons_layer(self, hidden_neurons, random_range=None):
 
-		return [NeuronsLayer(shape) for shape in hidden_neurons]
+		return [NeuronsLayer(shape, random_range) for shape in hidden_neurons]
 		

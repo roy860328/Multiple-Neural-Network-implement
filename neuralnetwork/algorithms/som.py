@@ -2,6 +2,7 @@ import numpy as np
 import collections
 import sys
 import math  
+import time
 
 from . import basic
 from neuralnetwork.neurons import neurons as ns
@@ -23,7 +24,9 @@ class SOM(basic.Basic):
 		self.stop_thread = False
 		self._correct_rate = 0
 		self._epoches_print_rate = max(1, self._total_epoches//10)
-		self.neighbor_range = 2
+		''' when neighbor_range = 0, only update itself '''
+		self.neighbor_range = max(1, self.nn_structure-5)
+		self.page.page_component.print_to_result("Neighbor_range: {}".format(self.neighbor_range))
 
 		self._print_init_set()
 		self._initial_neurons(self.nn_structure)
@@ -40,8 +43,10 @@ class SOM(basic.Basic):
 		for _ in range(square_weight):
 			network_architecture.append((square_weight, dim))
 
-		self.weights = ns.LayersImplement().create_neurons_layer(network_architecture)
+		self.weights = ns.LayersImplement().create_neurons_layer(network_architecture, (np.amin(self.data.x) , np.amax(self.data.x)))
 		self.page.page_component.print_to_result("\n=== Init weights ===")
+
+		self.page.page_component.print_to_result("self.weights len:")
 		self.page.page_component.print_to_result(self.weights)
 
 	def start_training(self): 
@@ -50,6 +55,9 @@ class SOM(basic.Basic):
 			if(self.stop_thread): 
 				self.page.page_component.print_to_result("Interrupt training ...")
 				return
+			if(self.current_iterations%10 == 0):
+				self.page.set_thread_draw_update(self.data.x, self.data.labels, self.weights, draw_weight=True)
+				time.sleep(0.1)
 			## Traing Step Alg
 			self._train_step()
 			self.current_iterations += 1
@@ -57,10 +65,13 @@ class SOM(basic.Basic):
 			## print current Epoches state
 			if(self.current_iterations%self._epoches_print_rate == 0):
 				self.page.page_component.print_to_result("\n======Epoches {}======".format(self.current_iterations))
-				_, current_correct_rate = self._cal_correct_rate("Training", self.data.train_x, self.data.train_y)
-				_, current_correct_rate = self._cal_correct_rate("Testing", self.data.test_x, self.data.test_y)
-				result, _ 				= self._cal_correct_rate("All", self.data.x, self.data.labels)
-				self.page.graph.draw_result(self.data.x, result, self.weights, draw_weight=True)
+				# _, current_correct_rate = self._cal_correct_rate("Training", self.data.train_x, self.data.train_y)
+				# _, current_correct_rate = self._cal_correct_rate("Testing", self.data.test_x, self.data.test_y)
+				# result, _ 				= self._cal_correct_rate("All", self.data.x, self.data.labels)
+				if self.neighbor_range>0 :
+					self.neighbor_range = self.neighbor_range -1
+				self.page.page_component.print_to_result("neighbor_range: {}".format(self.neighbor_range) )
+		self.page.stop_to_start()
 	''' 
 	'''
 	def stop_training(self):
@@ -71,11 +82,11 @@ class SOM(basic.Basic):
 	"""
 	def _train_step(self):
 		for index in range(len(self.data.train_x)):
-			min_BMU = self._find_BMU(self.data.train_x[index])
+			min_BMU = self._find_min_distance(self.data.train_x[index])
 			self._adjust_weight(min_BMU, self.neighbor_range,self.data.train_x[index])
 
 	""" best_matching_unit """
-	def _find_BMU(self, intputX):
+	def _find_min_distance(self, intputX):
 		intputX = intputX.T
 		min_BMU = (0, 0, 10000)
 		for i, weights in enumerate(self.weights):
@@ -94,9 +105,11 @@ class SOM(basic.Basic):
 		return temp_minj, Wi.result[temp_minj]
 
 	def _adjust_weight(self, min_BMU, neighbor_range, intputX):
-		square_range = (max(0, min_BMU[0]-neighbor_range), min(min_BMU[0]+neighbor_range, self.nn_structure-1) )
-		for i in range(square_range[0], square_range[1]):
-			for j in range(square_range[0], square_range[1]):
+		square_range_i = (max(0, min_BMU[0]-neighbor_range), min(min_BMU[0]+neighbor_range+1, self.nn_structure) )
+		square_range_j = (max(0, min_BMU[1]-neighbor_range), min(min_BMU[1]+neighbor_range+1, self.nn_structure) )
+
+		for i in range(square_range_i[0], square_range_i[1]):
+			for j in range(square_range_j[0], square_range_j[1]):
 				self.weights[i].weight[j] = self.weights[i].weight[j] + self.learning_rate * (intputX - self.weights[i].weight[j])
 	''' 
 	'''
@@ -104,8 +117,8 @@ class SOM(basic.Basic):
 	def _cal_correct_rate(self, dataformat, datasetX, datasetY):
 		super(SOM, self)._cal_correct_rate(dataformat, datasetX, datasetY)
 
-		self.page.page_component.print_to_result("Data correct rate: {}/{}, {}%  \nError rate       : {}%  \n"\
-													 .format(0, 0, 0, 0) )
+		# self.page.page_component.print_to_result("Data correct rate: {}/{}, {}%  \nError rate       : {}%  \n"\
+		# 											 .format(0, 0, 0, 0) )
 		return datasetY, 1
 
 	def _pass_activation_function(self, weight_output):
